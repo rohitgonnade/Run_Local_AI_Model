@@ -183,3 +183,11 @@ If you want to use llama.cpp in Python, install the Python bindings:
 ```
 pip install llama-cpp-python
 ```
+
+## Run
+
+Run using
+
+```
+python Load_AI_Model_gguf.py
+```
