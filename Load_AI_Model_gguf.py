@@ -1,7 +1,7 @@
 from llama_cpp import Llama
 
 # Load the model from the path where it is stored
-llm = Llama(model_path="downloaded/Tifa-Deepsex-14b-CoT-Q4_K_M.gguf")
+llm = Llama(model_path="../../AI_models/downloaded/Tifa-Deepsex-14b-CoT-Q4_K_M.gguf")
 
 # Start a conversation loop
 print("AI: Hello! How can I assist you today? (Type 'exit' to end the conversation)")
