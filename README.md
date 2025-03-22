@@ -17,6 +17,12 @@ Use following to activate virtual environment each time WSL restart
 source python_virtual_env/bin/activate
 ```
 
+# Install dependencies
+
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+```
 
 # Install DKMS
 DKMS (Dynamic Kernel Module Support) package is missing on your system. DKMS is required to build and install kernel modules, such as the NVIDIA driver.
