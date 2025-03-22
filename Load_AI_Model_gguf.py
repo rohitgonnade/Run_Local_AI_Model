@@ -1,21 +1,31 @@
 from llama_cpp import Llama
 
-# Load the model from the path where it is stored
-llm = Llama(model_path="../../AI_models/downloaded/Tifa-Deepsex-14b-CoT-Q4_K_M.gguf")
+try:
+    # Load the model
+    llm = Llama(
+        model_path="/Rohit/AI_models/downloaded/Tifa-Deepsex-14b-CoT-Q4_K_M.gguf",
+        n_gpu_layers=20,  # Adjust based on GPU memory
+        n_ctx=2048, #Controls the maximum number of tokens the model can consider at once (the "context window")
+        n_threads=4, # cpu threads
+        verbose=True  # Enable detailed logs
+    )
 
-# Start a conversation loop
-print("AI: Hello! How can I assist you today? (Type 'exit' to end the conversation)")
-while True:
-    # Get user input
-    user_input = input("You: ")
+    print("AI: Hello! How can I assist you today? (Type 'exit' to end the conversation)")
 
-    # Exit the conversation if the user types 'exit'
-    if user_input.lower() == "exit":
-        print("AI: Goodbye!")
-        break
+    while True:
+        user_input = input("You: ")
+        
+        if user_input.lower() == "exit":
+            print("AI: Goodbye!")
+            break
 
-    # Generate a response from the model
-    response = llm(user_input, max_tokens=50)
+        # Generate a response
+        response = llm(user_input, max_tokens=50)
+        
+        # Safely extract response text
+        ai_response = response.get("choices", [{}])[0].get("text", "").strip()
+        
+        print(f"AI: {ai_response if ai_response else 'I am not sure how to respond.'}")
 
-    # Print the AI's response
-    print(f"AI: {response['choices'][0]['text']}")
+except Exception as e:
+    print(f"Error: {e}")
