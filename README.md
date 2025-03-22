@@ -136,60 +136,17 @@ source ~/.bashrc
 
 **After restarting wsl and running 'nvcc --version' still shows error then just use 'source ~/.bashrc' again after making sure bashrc file has changes we made**
 
-# Build llama.cpp locally
+# Install llama.cpp
+**Please don't build llama-cpp locally.**  Yes you can run gguf model directly on terminal with this but to run it using Python we need to create subprocess which gives a lot of problems.
 
-**To get the Code:**
-
-```bash
-git clone https://github.com/ggml-org/llama.cpp
-cd llama.cpp
-mkdir buildLlama
-cd buildLlama
-```
-
-The following sections describe how to build with different backends and options.
-
-### GPU Build
-
-Build llama.cpp using `CMake`:
-
-By default  the CUDA compiler (nvcc) is targeting multiple GPU architectures during the build process. This is normal when building CUDA-enabled applications, as it ensures compatibility with a wide range of NVIDIA GPUs
-
-Why Multiple Architectures?:
-
-    The build process generates code for multiple architectures to ensure compatibility with a wide range of GPUs.
-
-    This is known as fatbin (fat binary) generation.
-
-Is This a Problem?
-
-    No, this is not a problem. It’s a standard part of the CUDA build process. However, if you want to optimize the build for your specific GPU,
-    you can limit the architectures to the ones supported by your GPU.
-
-**Step 1:** Find Your GPU’s Compute Capability
-Run the following command to check your GPU’s compute capability
-```
-nvidia-smi --query-gpu=compute_cap --format=csv
-```
-
-Example output 
-> compute_cap
-> 8.6
-
-
-**Step 2:** Specify the Compute Capability
-
-```bash
-cmake .. -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=86
-cmake --build build --config Release -j 4
-```
-
-
-### Install Python Bindings:
+### Install Python Bindings with CUDA support:
 If you want to use llama.cpp in Python, install the Python bindings:
+
 ```
-pip install llama-cpp-python
+CUDACXX=/usr/local/cuda-12.8/bin/nvcc CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=86" pip install llama-cpp-python --no-cache-dir
 ```
+
+/usr/local/cuda-12.8/bin/nvcc -> path where nvcc is located which can be obtained using **which nvcc**
 
 ## Run
 
