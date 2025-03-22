@@ -146,7 +146,7 @@ If you want to use llama.cpp in Python, install the Python bindings:
 CUDACXX=/usr/local/cuda-12.8/bin/nvcc CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=86" pip install llama-cpp-python --no-cache-dir
 ```
 
-/usr/local/cuda-12.8/bin/nvcc -> path where nvcc is located which can be obtained using **which nvcc**
+_/usr/local/cuda-12.8/bin/nvcc_ -> path where nvcc is located which can be obtained using **which nvcc**
 
 ## Run
 
@@ -155,3 +155,8 @@ Run using
 ```
 python Load_AI_Model_gguf.py
 ```
+
+If python binding is properly installed with CUDA support then after running we get name of GPU 
+
+![image](https://github.com/user-attachments/assets/1997667e-4f7a-45a5-b5d3-4279b51d4a57)
+
