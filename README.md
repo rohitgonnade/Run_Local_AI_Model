@@ -3,7 +3,7 @@ This shows how one can run a AI model .gguf file locally on Linux
 
 ## Installation
 
-**I'm running Amazon linux 2023 in WSL with NVIDIA RTX 2050 and Intel i5 12th Gen processor**
+**I'm running Ubuntu 24.04 in WSL with NVIDIA RTX 2050 and Intel i5 12th Gen processor**
 
 
 **Create virtual environemnt**
@@ -18,36 +18,18 @@ source python_virtual_env/bin/activate
 ```
 
 
-# Build ccache Amazon Linux
-installing ccache can speed up compilation by caching build results. Here's how to install ccache on Amazon Linux 
+# Install DKMS
+DKMS (Dynamic Kernel Module Support) package is missing on your system. DKMS is required to build and install kernel modules, such as the NVIDIA driver.
 
-### Build ccache from Source
-
-**Install Dependencies**:
 ```
-sudo yum groupinstall "Development Tools" -y
-sudo yum install cmake git -y
+sudo apt update
+sudo apt install dkms
 ```
 
-**Download ccache Source Code:**
-```
-wget https://github.com/ccache/ccache/releases/download/v4.8.3/ccache-4.8.3.tar.gz
-tar -xzf ccache-4.8.3.tar.gz
-cd ccache-4.8.3
-```
+Verify
 
-**Build and Install ccache:**
 ```
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-```
-
-**Verify Installation:**
-```
-ccache --version
+dkms --version
 ```
 
 # Install CUDA toolkit
@@ -55,12 +37,31 @@ ccache --version
 for my laptop ( with RTX 2050 and Intel i5 12th Gen ) , CUDA toolkit 12.x is supported
 
 ```
-wget https://developer.download.nvidia.com/compute/cuda/12.8.0/local_installers/cuda-repo-amzn2023-12-8-local-12.8.0_570.86.10-1.x86_64.rpm
-rpm -i cuda-repo-amzn2023-12-8-local-12.8.0_570.86.10-1.x86_64.rpm
-dnf clean all
-dnf -y install cuda-toolkit-12-8
+wget https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
+sudo sh cuda_12.8.1_570.124.06_linux.run
 
 ```
+
+You should see this message
+
+          ===========
+          = Summary =
+          ===========
+          
+          Driver:   Not Selected
+          Toolkit:  Installed in /usr/local/cuda-12.8/
+          
+          Please make sure that
+           -   PATH includes /usr/local/cuda-12.8/bin
+           -   LD_LIBRARY_PATH includes /usr/local/cuda-12.8/lib64, or, add /usr/local/cuda-12.8/lib64 to /etc/ld.so.conf and run ldconfig as root
+          
+          **To uninstall the CUDA Toolkit, run cuda-uninstaller in /usr/local/cuda-12.8/bin**
+          ***WARNING: Incomplete installation! This installation did not install the CUDA Driver. A driver of version at least 570.00 is required for CUDA 12.8 functionality to work.
+          To install the driver using this installer, run the following command, replacing <CudaInstaller> with the name of this run file:
+              sudo <CudaInstaller>.run --silent --driver
+          
+          Logfile is /var/log/cuda-installer.log
+
 
 **Verify Installtion**
 ```
