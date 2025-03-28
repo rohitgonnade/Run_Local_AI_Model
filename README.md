@@ -3,7 +3,7 @@ This shows how one can run a AI model .gguf file locally on Linux
 
 ## Installation
 
-**I'm running Ubuntu 24.04 in WSL with NVIDIA RTX 2050 and Intel i5 12th Gen processor**
+**I'm running Ubuntu 24.04 and Amazon Linux in WSL with NVIDIA RTX 2050 and Intel i5 12th Gen processor**
 
 
 **Create virtual environemnt**
@@ -24,7 +24,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ```
 
-# Install DKMS
+# Install DKMS for Ubuntu 
 DKMS (Dynamic Kernel Module Support) package is missing on your system. DKMS is required to build and install kernel modules, such as the NVIDIA driver.
 
 ```
@@ -38,10 +38,44 @@ Verify
 dkms --version
 ```
 
+# Build ccache for Amazon linux
+installing ccache can speed up compilation by caching build results. Here's how to install ccache on Amazon Linux
+```
+ yum groupinstall "Development Tools" -y
+ yum install cmake git -y
+```
+
+**Download ccache Source Code:**
+```
+wget https://github.com/ccache/ccache/releases/download/v4.8.3/ccache-4.8.3.tar.gz
+tar -xzf ccache-4.8.3.tar.gz
+cd ccache-4.8.3
+```
+
+**Build and Install ccache:**
+
+By default installed in **/usr/local/bin**. If you want to prefer diffrent path use **cmake .. -DCMAKE_INSTALL_PREFIX=/path/you_prefer**
+
+
+```
+mkdir build
+cd build
+cmake ..
+make
+make install   
+```
+
+**Verify Installation:**
+```
+ccache --version
+```
+
+
 # Install CUDA toolkit
 
 for my laptop ( with RTX 2050 and Intel i5 12th Gen ) , CUDA toolkit 12.x is supported
 
+**For Ubuntu**
 ```
 wget https://developer.download.nvidia.com/compute/cuda/12.8.1/local_installers/cuda_12.8.1_570.124.06_linux.run
 sudo sh cuda_12.8.1_570.124.06_linux.run
@@ -67,6 +101,19 @@ You should see this message
               sudo <CudaInstaller>.run --silent --driver
           
           Logfile is /var/log/cuda-installer.log
+
+
+
+
+**For Amazon linux**
+
+```
+wget https://developer.download.nvidia.com/compute/cuda/12.8.0/local_installers/cuda-repo-amzn2023-12-8-local-12.8.0_570.86.10-1.x86_64.rpm
+rpm -i cuda-repo-amzn2023-12-8-local-12.8.0_570.86.10-1.x86_64.rpm
+dnf clean all
+dnf -y install cuda-toolkit-12-8
+```
+
 
 
 **Verify Installtion**
