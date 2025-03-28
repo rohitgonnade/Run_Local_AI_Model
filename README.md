@@ -8,7 +8,7 @@ This shows how one can run a AI model .gguf file locally on Linux
 
 **Create virtual environemnt**
 ```
-python -m venv /path/to/new/virtual/environment
+python -m venv python_virtual_env
 ```
 
 Use following to activate virtual environment each time WSL restart 
