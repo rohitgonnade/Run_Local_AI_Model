@@ -185,14 +185,14 @@ cmake --build build --config Release -j 4
 ```
 
 
-### Install Python Bindings:
+#### Install Python Bindings: (optional)
 Don't use this, because of problems in sub process of python. **INSTEAD use Linux script** 
 If you want to use llama.cpp in Python, install the Python bindings:
 ```
 CUDACXX=/usr/local/cuda-12.8/bin/nvcc CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=86" pip install llama-cpp-python --no-cache-dir
 ```
 
-### Run
+#### Run
 
 Run using
 
