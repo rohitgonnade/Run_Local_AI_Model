@@ -1,5 +1,6 @@
 
 #include "llama.h"
+
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -22,9 +23,11 @@ llama_sampler * smpl = nullptr;
 
 std::vector<llama_chat_message> messages;
 
+const std::string model_path = "/Rohit/Local_model/Qwen2.5-14B-Instruct-Q4_K_M.gguf"; 
+const std::string log_path = "/Rohit/chat_log.txt";
+
 void initializeModel()
 {
-     const std::string model_path = "/Rohit/Local_model/Qwen2.5-14B-Instruct-Q4_K_M.gguf"; 
 
     // load dynamic backends
     ggml_backend_load_all();
@@ -121,47 +124,45 @@ void generateResponse(const std::string& userMessage)
     std::vector<char> formatted(llama_n_ctx(ctx));
     int prev_len = 0;
 
+    const char * tmpl = llama_model_chat_template(model, /* name */ nullptr);
 
+    // add the user input to the message list and format it
+    messages.emplace_back(llama_chat_message{"user",  strdup(userMessage.c_str())});
 
-        const char * tmpl = llama_model_chat_template(model, /* name */ nullptr);
+    int new_len = llama_chat_apply_template(tmpl, messages.data(), messages.size(), true, formatted.data(), formatted.size());
+    if (new_len > (int)formatted.size()) {
+        formatted.resize(new_len);
+        new_len = llama_chat_apply_template(tmpl, messages.data(), messages.size(), true, formatted.data(), formatted.size());
+    }
+    if (new_len < 0) {
+        fprintf(stderr, "failed to apply the chat template\n");
+        return ;
+    }
 
-        // add the user input to the message list and format it
-        messages.emplace_back(llama_chat_message{"user",  strdup(userMessage.c_str())});
+    // remove previous messages to obtain the prompt to generate the response
+    std::string prompt(formatted.begin() + prev_len, formatted.begin() + new_len);
 
-        int new_len = llama_chat_apply_template(tmpl, messages.data(), messages.size(), true, formatted.data(), formatted.size());
-        if (new_len > (int)formatted.size()) {
-            formatted.resize(new_len);
-            new_len = llama_chat_apply_template(tmpl, messages.data(), messages.size(), true, formatted.data(), formatted.size());
-        }
-        if (new_len < 0) {
-            fprintf(stderr, "failed to apply the chat template\n");
-            return ;
-        }
+    // generate a response
+    printf("\033[33m");
+    std::string response = generate(prompt);
+    printf("\n\033[0m");
 
-        // remove previous messages to obtain the prompt to generate the response
-        std::string prompt(formatted.begin() + prev_len, formatted.begin() + new_len);
-
-        // generate a response
-        printf("\033[33m");
-        std::string response = generate(prompt);
-        printf("\n\033[0m");
-
-        // add the response to the messages
-        messages.emplace_back(llama_chat_message{"assistant", strdup(response.c_str())});
-        prev_len = llama_chat_apply_template(tmpl, messages.data(), messages.size(), false, nullptr, 0);
-        if (prev_len < 0) {
-            fprintf(stderr, "failed to apply the chat template\n");
-            return ;
-        }
+    // add the response to the messages
+    messages.emplace_back(llama_chat_message{"assistant", strdup(response.c_str())});
+    prev_len = llama_chat_apply_template(tmpl, messages.data(), messages.size(), false, nullptr, 0);
+    if (prev_len < 0) {
+        fprintf(stderr, "failed to apply the chat template\n");
+        return ;
+    }
     
 }
 
 int main() {
    
-initializeModel();
+    initializeModel();
 
-        std::string user;
-while (true) {
+    std::string user;
+    while (true) {
         // get user input
         printf("\033[32m> \033[0m");
         std::getline(std::cin, user);
@@ -170,11 +171,10 @@ while (true) {
         if (user == "exit") {
             break;
         }
-
-}
+    }
 
     // Save messages to a file
-    std::ofstream outFile("/Rohit/chat_log.txt");
+    std::ofstream outFile(log_path);
     if (outFile.is_open()) {
         for (auto &msg : messages) {
             outFile << "[" << msg.role << "] " << msg.content << "\n";
@@ -188,6 +188,7 @@ while (true) {
     for (auto & msg : messages) {
         free(const_cast<char *>(msg.content));
     }
+
     llama_sampler_free(smpl);
     llama_free(ctx);
     llama_model_free(model);
