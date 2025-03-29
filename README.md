@@ -241,6 +241,17 @@ CUDACXX=/usr/local/cuda-12.8/bin/nvcc CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_AR
 
 #### Run
 
+We will create a WSL process to run AI model through powershell
+
+From base directory run
+
+```
+.\Powershell_script\Run_AI_memory.ps1
+```
+
+
+
+For Python binding (**Not used** )
 Run using
 
 ```
