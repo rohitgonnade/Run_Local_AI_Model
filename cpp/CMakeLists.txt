@@ -4,6 +4,8 @@ project(ChatLlamaApp)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Llama-cpp in insatlled in directory /Rohit/installed_Llamma_cpp
+
 # Include llama headers
 include_directories(/Rohit/installed_Llamma_cpp/include
   )
