@@ -231,6 +231,12 @@ cmake .. -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=86
 cmake --build build --config Release -j 4
 ```
 
+**Step 3**: install it
+
+```
+cmake --install build --prefix <path_to_install>
+```
+
 
 #### Install Python Bindings: (optional)
 Don't use this, because of problems in sub process of python. **INSTEAD use Linux script** 
